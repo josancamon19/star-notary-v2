@@ -8,16 +8,21 @@ contract StarNotary is ERC721 {
 
     constructor() ERC721("STAR", "STAR") {}
 
-    mapping(uint256 => Star) public tokenIdToStarInfo;
+    mapping(uint256 => Star) public stars;
     mapping(uint256 => uint256) public starsForSale;
 
     function createStar(string memory _name, uint256 _tokenId) public {
         Star memory newStar = Star(_name);
-        tokenIdToStarInfo[_tokenId] = newStar;
+        stars[_tokenId] = newStar;
         _mint(msg.sender, _tokenId);
     }
 
     function putStarUpForSale(uint256 _tokenId, uint256 _price) public {
+        require(
+            bytes(stars[_tokenId].name).length > 0,
+            "The star should be created"
+        );
+
         require(
             ownerOf(_tokenId) == msg.sender,
             "You can't sale the Star you don't owned"
